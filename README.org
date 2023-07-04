@@ -1,0 +1,9 @@
+#+TITLE: Advent of Code Solutions
+#+AUTHOR: Lucas Sta Maria
+#+EMAIL: lucas@priime.dev
+#+DESCRIPTION: This contains my collection of solutions for Advent of Code.
+#+LANGUAGE: en
+
+This contains my collection of solutions for [[adventofcode.com][Advent of Code]].
+
+For 2022, my language of choice is [[https://racket-lang.org/][Racket]].
