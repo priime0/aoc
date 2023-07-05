@@ -2,46 +2,43 @@
 
 (call-with-input-file "02.txt"
   (lambda (in)
-    (define lines (in-lines in))
-
-    #; {Symbol -> Symbol}
-    (define (decision->shape decision)
-      (hash-ref #hash((X . A) (Y . B) (Z . C))
-                decision))
-    #; {Symbol Symbol -> Symbol}
-    (define (decision->you elf decision)
-      (case (list decision elf)
-        [((X A) (Y C) (Z B)) 'C]
-        [((Y A) (Z C) (X B)) 'A]
-        [((Z A) (X C) (Y B)) 'B]))
-    (define shapes
-      #hash((A . 1) (X . 1) (B . 2) (Y . 2) (C . 3) (Z . 3)))
-    #; {Symbol -> Natural}
-    (define (shape->score shape)
-      (hash-ref shapes shape))
-    #; {Symbol Symbol -> Natural}
-    (define (round-result-score elf you)
+    (define lines (sequence->list (in-lines in)))
+    (define (part1 elf you)
       (case (list elf you)
-        [((A A) (B B) (C C)) 3]
-        [((A B) (B C) (C A)) 6]
-        [else 0]))
-    #; {Symbol Symbol -> Natural}
-    (define (round-score elf you)
-      (+ (round-result-score elf you)
-         (shape->score you)))
+        [((A X)) (+ 3 1)]
+        [((A Y)) (+ 6 2)]
+        [((A Z)) (+ 0 3)]
+        [((B X)) (+ 0 1)]
+        [((B Y)) (+ 3 2)]
+        [((B Z)) (+ 6 3)]
+        [((C X)) (+ 6 1)]
+        [((C Y)) (+ 0 2)]
+        [((C Z)) (+ 3 3)]))
 
-    #; {(values [Listof Natural] [Listof Natural])}
-    (define-values (scores1 scores2)
-      (for/fold ([list1 '()]
-                 [list2 '()])
-                ([line lines])
-        (define moves (string-split line " "))
-        (define elf (string->symbol (car moves)))
-        (define decision (string->symbol (cadr moves)))
-        (values (cons (round-score elf (decision->shape decision)) list1)
-                (cons (round-score elf (decision->you elf decision)) list2))))
+    (define (part2 elf you)
+      (case (list elf you)
+        [((A X)) (+ 0 3)]
+        [((A Y)) (+ 3 1)]
+        [((A Z)) (+ 6 2)]
+        [((B X)) (+ 0 1)]
+        [((B Y)) (+ 3 2)]
+        [((B Z)) (+ 6 3)]
+        [((C X)) (+ 0 2)]
+        [((C Y)) (+ 3 3)]
+        [((C Z)) (+ 6 1)]))
 
+    (define (line->sym line idx)
+      (string->symbol (string (string-ref line idx))))
+    (define (line->elf line)
+      (line->sym line 0))
+    (define (line->you line)
+      (line->sym line 2))
+
+    (define (sum-scores part)
+      (for/sum ([line lines])
+        (part (line->elf line) (line->you line))))
+    
     ;; Part 1
-    (println (foldr + 0 scores1))
+    (println (sum-scores part1))
     ;; Part 2
-    (println (foldr + 0 scores2))))
+    (println (sum-scores part2))))
