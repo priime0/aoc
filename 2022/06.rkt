@@ -1,7 +1,5 @@
 #lang racket
 
-(require threading)
-
 #; {[Listof Char] Natural -> Natural}
 (define (find-start s n)
   (for/fold ([done? #f]
