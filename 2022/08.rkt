@@ -1,5 +1,7 @@
 #lang racket
 
+(require threading)
+
 (define vref vector-ref)
 (define vset! vector-set!)
 (define mvec make-vector)
@@ -59,17 +61,11 @@
 
 #; {[Vectorof [Vectorof Natural]] [Vectorof [Vectorof Natural]] -> Natural}
 (define (get-visible heights maxes)
-  (for/fold ([total 0])
-            ([rowh heights]
-             [rowm maxes])
-    (define count
-      (for/fold ([c 0])
-                ([colh rowh]
-                 [colm rowm])
-        (if (> colh colm)
-            (add1 c)
-            c)))
-    (+ total count)))
+  (for/sum ([rowh heights]
+            [rowm maxes])
+    (for/sum ([colh rowh]
+              [colm rowm])
+      (if (> colh colm) 1 0))))
 
 #; {[Vectorof [Vectorof Natural]] -> [Vectorof [Vectorof Natural]]}
 (define (get-scenic-scores heights)
@@ -140,12 +136,11 @@
 
 #; {[Vectorof [Vectorof Natural]] -> Natural}
 (define (vectors-max vec)
-  (for/fold ([m 0])
-            ([r vec])
-    (max m
-         (for/fold ([n 0])
-                   ([c r])
-           (max n c)))))
+  (~>> vec
+       (vector-map vector->list)
+       vector->list
+       flatten
+       (apply max)))
 
 (call-with-input-file "08.txt"
   (lambda (in)
