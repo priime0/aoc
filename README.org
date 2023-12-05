@@ -6,4 +6,4 @@
 
 This contains my collection of solutions for [[adventofcode.com][Advent of Code]].
 
-For 2022, my language of choice is [[https://racket-lang.org/][Racket]].
+For 2022 and 2023, my language of choice is [[https://racket-lang.org/][Racket]].
